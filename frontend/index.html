@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS System - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>POS System</h1>
+            </div>
+            <nav class="nav-menu">
+                <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                    <span class="icon">📊</span> Dashboard
+                </a>
+                <a href="#sales" class="nav-link" data-section="sales">
+                    <span class="icon">🛒</span> New Sale
+                </a>
+                <a href="#products" class="nav-link" data-section="products">
+                    <span class="icon">📦</span> Products
+                </a>
+                <a href="#transactions" class="nav-link" data-section="transactions">
+                    <span class="icon">📋</span> Transactions
+                </a>
+                <a href="#efris" class="nav-link" data-section="efris">
+                    <span class="icon">🔗</span> EFRIS Status
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-content">
+                    <h2 id="section-title">Dashboard</h2>
+                    <div class="header-actions">
+                        <span class="user-info">Admin User</span>
+                        <button class="btn btn-logout" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active">
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <h3>Total Sales</h3>
+                        <p class="stat-value" id="stat-sales">0</p>
+                        <span class="stat-label">Last 30 days</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Revenue</h3>
+                        <p class="stat-value" id="stat-revenue">UGX 0</p>
+                        <span class="stat-label">Last 30 days</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Tax Collected</h3>
+                        <p class="stat-value" id="stat-tax">UGX 0</p>
+                        <span class="stat-label">Last 30 days</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>EFRIS Submitted</h3>
+                        <p class="stat-value" id="stat-efris">0</p>
+                        <span class="stat-label">Transactions</span>
+                    </div>
+                    <div class="stat-card alert">
+                        <h3>Low Stock</h3>
+                        <p class="stat-value" id="stat-lowstock">0</p>
+                        <span class="stat-label">Products</span>
+                    </div>
+                    <div class="stat-card warning">
+                        <h3>EFRIS Failed</h3>
+                        <p class="stat-value" id="stat-failed">0</p>
+                        <span class="stat-label">Submissions</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- New Sale Section -->
+            <section id="sales" class="section">
+                <div class="sales-container">
+                    <div class="cart-panel">
+                        <h3>Point of Sale</h3>
+                        
+                        <div class="product-search">
+                            <input type="text" id="product-search" placeholder="Search products by name or SKU...">
+                            <button class="btn btn-secondary" onclick="loadProducts()">Refresh</button>
+                        </div>
+
+                        <div class="products-list" id="products-list">
+                            <!-- Products will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="invoice-panel">
+                        <h3>Invoice</h3>
+                        
+                        <div class="invoice-items" id="invoice-items">
+                            <p class="empty-message">No items added</p>
+                        </div>
+
+                        <div class="invoice-summary">
+                            <div class="summary-row">
+                                <span>Subtotal:</span>
+                                <span id="subtotal">UGX 0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Tax (18%):</span>
+                                <span id="tax-amount">UGX 0</span>
+                            </div>
+                            <div class="summary-row">
+                                <label>Discount:</label>
+                                <input type="number" id="discount" value="0" min="0" onchange="updateInvoice()">
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total:</span>
+                                <span id="total-amount">UGX 0</span>
+                            </div>
+                        </div>
+
+                        <div class="payment-section">
+                            <label>Payment Method:</label>
+                            <select id="payment-method" onchange="updateInvoice()">
+                                <option value="CASH">Cash</option>
+                                <option value="CARD">Card</option>
+                                <option value="MOBILE_MONEY">Mobile Money</option>
+                            </select>
+                        </div>
+
+                        <div class="sale-actions">
+                            <button class="btn btn-secondary" onclick="clearCart()">Clear Cart</button>
+                            <button class="btn btn-primary" onclick="completeSale()">Complete Sale</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Products Management Section -->
+            <section id="products" class="section">
+                <div class="section-header">
+                    <h3>Products Management</h3>
+                    <button class="btn btn-primary" onclick="showAddProductForm()">Add Product</button>
+                </div>
+
+                <div id="add-product-form" class="form-container" style="display: none;">
+                    <div class="form-card">
+                        <h4>Add New Product</h4>
+                        <form onsubmit="saveProduct(event)">
+                            <div class="form-group">
+                                <label>Product Name *</label>
+                                <input type="text" id="product-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>SKU *</label>
+                                <input type="text" id="product-sku" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <input type="text" id="product-category">
+                            </div>
+                            <div class="form-group">
+                                <label>Price (UGX) *</label>
+                                <input type="number" id="product-price" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input type="number" id="product-quantity" value="0" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Tax Rate</label>
+                                <input type="number" id="product-tax" value="18" min="0" max="100" step="0.01">
+                                <small>%</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea id="product-description"></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save Product</button>
+                                <button type="button" class="btn btn-secondary" onclick="hideAddProductForm()">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="products-table">
+                    <table id="products-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>SKU</th>
+                                <th>Category</th>
+                                <th>Price (UGX)</th>
+                                <th>Quantity</th>
+                                <th>Tax Rate</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-tbody">
+                            <!-- Products will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Transactions Section -->
+            <section id="transactions" class="section">
+                <div class="section-header">
+                    <h3>Sales Transactions</h3>
+                    <div class="filter-controls">
+                        <select id="filter-status" onchange="loadTransactions()">
+                            <option value="">All Status</option>
+                            <option value="PENDING">Pending EFRIS</option>
+                            <option value="SUBMITTED">Submitted</option>
+                            <option value="APPROVED">Approved</option>
+                            <option value="FAILED">Failed</option>
+                        </select>
+                        <input type="date" id="filter-date" onchange="loadTransactions()">
+                    </div>
+                </div>
+
+                <div class="transactions-table">
+                    <table id="transactions-table">
+                        <thead>
+                            <tr>
+                                <th>Receipt</th>
+                                <th>Date</th>
+                                <th>Amount (UGX)</th>
+                                <th>Tax</th>
+                                <th>Payment</th>
+                                <th>EFRIS Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-tbody">
+                            <!-- Transactions will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- EFRIS Status Section -->
+            <section id="efris" class="section">
+                <div class="section-header">
+                    <h3>EFRIS Integration Status</h3>
+                    <button class="btn btn-primary" onclick="testEfrisConnection()">Test Connection</button>
+                </div>
+
+                <div class="efris-status">
+                    <div class="status-card">
+                        <h4>Connection Status</h4>
+                        <p id="efris-connection" class="status-pending">Testing...</p>
+                    </div>
+                    <div class="status-card">
+                        <h4>Configuration</h4>
+                        <div class="config-info">
+                            <p><strong>TIN:</strong> <span id="config-tin">Not configured</span></p>
+                            <p><strong>Device Serial:</strong> <span id="config-serial">Not configured</span></p>
+                            <p><strong>Base URL:</strong> <span id="config-url">Not configured</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="efris-logs">
+                    <h4>Recent EFRIS Submissions</h4>
+                    <div id="efris-logs-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Receipt</th>
+                                    <th>Submitted</th>
+                                    <th>Status</th>
+                                    <th>Receipt Code</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="efris-logs-tbody">
+                                <!-- EFRIS logs will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Success/Error Notifications -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Modal for Transaction Details -->
+    <div id="transaction-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTransactionModal()">&times;</span>
+            <h3>Transaction Details</h3>
+            <div id="transaction-details"></div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="submit-efris-btn" onclick="submitTransactionToEfris()">Submit to EFRIS</button>
+                <button class="btn btn-secondary" onclick="closeTransactionModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
