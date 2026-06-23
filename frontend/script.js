@@ -4,6 +4,12 @@ let cart = [];
 let selectedTransactionId = null;
 let currentUser = null;
 
+// Barcode Scanner Configuration
+let allProducts = []; // Store all products for barcode lookup
+const BARCODE_TIMEOUT_MS = 100; // Time to wait for complete barcode scan
+let barcodeBuffer = '';
+let barcodeTimeout = null;
+
 // Session Timeout Configuration (10 minutes = 600000 ms)
 const SESSION_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
 let inactivityTimer = null;
@@ -17,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadProducts();
     testEfrisConnection();
     setupInactivityTimeout();
+    setupBarcodeScanner();
 });
 
 // Authentication Check
@@ -160,6 +167,7 @@ async function loadProducts() {
         }
         
         const products = await response.json();
+        allProducts = products; // Store for barcode lookup
         
         const productsList = document.getElementById('products-list');
         productsList.innerHTML = '';
@@ -175,15 +183,7 @@ async function loadProducts() {
             `;
             card.addEventListener('click', () => addToCart(product));
             productsList.appendChild(card);
-        });, {
-            headers: getAuthHeaders()
         });
-        
-        if (response.status === 401) {
-            clearAuthentication();
-            window.location.href = 'login.html';
-            return;
-        }
         
     } catch (error) {
         console.error('Error loading products:', error);

@@ -704,6 +704,81 @@ tbody tr:hover {
     background: var(--secondary-color);
 }
 
+/* Barcode Scanner */
+.barcode-scanner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-md);
+}
+
+.scanner-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    font-weight: 600;
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.scanner-icon {
+    font-size: 24px;
+}
+
+.barcode-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid white;
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: white;
+    color: #1e293b;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.barcode-input:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.barcode-input::placeholder {
+    color: #cbd5e1;
+}
+
+.scanner-feedback {
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    min-height: 20px;
+    display: none;
+}
+
+.scanner-feedback.show {
+    display: block;
+}
+
+.scanner-feedback.success {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border-left: 3px solid #10b981;
+}
+
+.scanner-feedback.error {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border-left: 3px solid #ef4444;
+}
+
+.scanner-feedback.info {
+    background-color: rgba(37, 99, 235, 0.2);
+    color: #2563eb;
+    border-left: 3px solid #2563eb;
+}
+
 /* Inactivity Warning */
 .inactivity-warning {
     position: fixed;

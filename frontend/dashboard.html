@@ -87,6 +87,21 @@
                     <div class="cart-panel">
                         <h3>Point of Sale</h3>
                         
+                        <!-- Barcode Scanner Input -->
+                        <div class="barcode-scanner">
+                            <label for="barcode-input" class="scanner-label">
+                                <span class="scanner-icon">📱</span> Scan Barcode or Enter SKU
+                            </label>
+                            <input 
+                                type="text" 
+                                id="barcode-input" 
+                                placeholder="Scan barcode here..." 
+                                autofocus
+                                class="barcode-input"
+                            >
+                            <div id="scanner-feedback" class="scanner-feedback"></div>
+                        </div>
+                        
                         <div class="product-search">
                             <input type="text" id="product-search" placeholder="Search products by name or SKU...">
                             <button class="btn btn-secondary" onclick="loadProducts()">Refresh</button>
