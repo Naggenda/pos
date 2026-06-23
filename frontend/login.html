@@ -258,7 +258,7 @@
                     }
 
                     // Redirect to dashboard
-                    window.location.href = 'index.html';
+                    window.location.href = 'dashboard.html';
                 } else {
                     showError(data.error || 'Login failed');
                     loginBtn.disabled = false;
@@ -290,7 +290,7 @@
         window.addEventListener('load', function() {
             const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
             if (token) {
-                window.location.href = 'index.html';
+                window.location.href = 'dashboard.html';
             }
             
             // Show logout message if user was logged out due to inactivity

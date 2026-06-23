@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS System - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>POS System</h1>
+            </div>
+            <nav class="nav-menu">
+                <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                    <span class="icon">📊</span> Dashboard
+                </a>
+                <a href="#sales" class="nav-link" data-section="sales">
+                    <span class="icon">🛒</span> New Sale
+                </a>
+                <a href="#products" class="nav-link" data-section="products">
+                    <span class="icon">📦</span> Products
+                </a>
+                <a href="#transactions" class="nav-link" data-section="transactions">
+                    <span class="icon">📋</span> Transactions
+                </a>
+                <a href="#efris" class="nav-link" data-section="efris">
+                    <span class="icon">🔗</span> EFRIS Status
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-content">
+                    <h2 id="section-title">Dashboard</h2>
+                    <div class="header-actions">
+                        <span class="user-info">Admin User</span>
+                        <button class="btn btn-logout" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active">
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <h3>Total Sales</h3>
+                        <p class="stat-value" id="stat-sales">0</p>
+                        <span class="stat-label">Last 30 days</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Revenue</h3>
+                        <p class="stat-value" id="stat-revenue">UGX 0</p>
+                        <span class="stat-label">Last 30 days</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Tax Collected</h3>
+                        <p class="stat-value" id="stat-tax">UGX 0</p>
+                        <span class="stat-label">Last 30 days</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>EFRIS Submitted</h3>
+                        <p class="stat-value" id="stat-efris">0</p>
+                        <span class="stat-label">Transactions</span>
+                    </div>
+                    <div class="stat-card alert">
+                        <h3>Low Stock</h3>
+                        <p class="stat-value" id="stat-lowstock">0</p>
+                        <span class="stat-label">Products</span>
+                    </div>
+                    <div class="stat-card warning">
+                        <h3>EFRIS Failed</h3>
+                        <p class="stat-value" id="stat-failed">0</p>
+                        <span class="stat-label">Submissions</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- New Sale Section -->
+            <section id="sales" class="section">
+                <div class="sales-container">
+                    <div class="cart-panel">
+                        <h3>Point of Sale</h3>
+                        
+                        <div class="product-search">
+                            <input type="text" id="product-search" placeholder="Search products by name or SKU...">
+                            <button class="btn btn-secondary" onclick="loadProducts()">Refresh</button>
+                        </div>
+
+                        <div class="products-list" id="products-list">
+                            <!-- Products will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="invoice-panel">
+                        <div class="cart-header">
+                            <h3>Shopping Cart</h3>
+                            <button class="btn btn-danger" onclick="clearCart()">Clear Cart</button>
+                        </div>
+
+                        <table id="cart-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Qty</th>
+                                    <th>Price</th>
+                                    <th>Subtotal</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cart-items">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 20px;">Cart is empty</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="cart-summary">
+                            <div class="summary-row">
+                                <span>Subtotal:</span>
+                                <span id="subtotal">UGX 0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Tax (18%):</span>
+                                <span id="tax">UGX 0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Discount:</span>
+                                <input type="number" id="discount" value="0" min="0" onchange="updateCartSummary()" style="width: 100px;">
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total:</span>
+                                <span id="total">UGX 0</span>
+                            </div>
+                            <button class="btn btn-primary" onclick="completeSale()" style="width: 100%; margin-top: 20px;">Complete Sale</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Products Section -->
+            <section id="products" class="section">
+                <div class="form-container">
+                    <div class="form-card">
+                        <h4>Add New Product</h4>
+                        <form onsubmit="addProduct(event)">
+                            <div class="form-group">
+                                <label>Product Name</label>
+                                <input type="text" id="product-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>SKU</label>
+                                <input type="text" id="product-sku" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <input type="text" id="product-category" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Unit Price (UGX)</label>
+                                <input type="number" id="product-price" required min="0" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>Quantity in Stock</label>
+                                <input type="number" id="product-quantity" required min="0">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Add Product</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="section-content">
+                    <h3>Product Inventory</h3>
+                    <table id="products-table">
+                        <thead>
+                            <tr>
+                                <th>SKU</th>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Unit Price</th>
+                                <th>Stock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-body">
+                            <!-- Products will load here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Transactions Section -->
+            <section id="transactions" class="section">
+                <div class="section-content">
+                    <h3>Sales Transactions</h3>
+                    <table id="transactions-table">
+                        <thead>
+                            <tr>
+                                <th>Receipt #</th>
+                                <th>Date</th>
+                                <th>Items</th>
+                                <th>Amount</th>
+                                <th>Tax</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-body">
+                            <!-- Transactions will load here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- EFRIS Section -->
+            <section id="efris" class="section">
+                <div class="efris-status" id="efris-status">
+                    <!-- EFRIS status will load here -->
+                </div>
+
+                <div class="efris-logs">
+                    <h4>EFRIS Integration Logs</h4>
+                    <table id="efris-logs-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Receipt #</th>
+                                <th>Status</th>
+                                <th>Response</th>
+                            </tr>
+                        </thead>
+                        <tbody id="efris-logs-body">
+                            <!-- Logs will load here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
